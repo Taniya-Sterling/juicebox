@@ -31,30 +31,30 @@ async function createInitialUsers() {
     await createUser({ username: 'glamgal', password: 'soglam' , name:'saorse', location:'ireland' });
   
 
-    // console.log("Finished creating users!");
+    console.log("Finished creating users!");
   } catch(error) {
-    // console.error("Error creating users!");
+    console.error("Error creating users!");
     throw error;
   }
 }
 async function dropTables() {
   try {
-    // console.log("Starting to drop tables...");
+    console.log("Starting to drop tables...");
 
     await client.query(`
       DROP TABLE IF EXISTS users;
     `);
 
-    // console.log("Finished dropping tables!");
+    console.log("Finished dropping tables!");
   } catch (error) {
-    // console.error("Error dropping tables!");
+    console.error("Error dropping tables!");
     throw error;
   }
 }
 
 async function createTables() {
   try {
-    // console.log("Starting to build tables...");
+    console.log("Starting to build tables...");
 
     await client.query(`
     CREATE TABLE users (
@@ -67,7 +67,7 @@ async function createTables() {
     );
     `);
 
-    // console.log("Finished building tables!");
+    console.log("Finished building tables!");
   } catch (error) {
     console.error("Error building tables!");
     throw error;
@@ -80,6 +80,7 @@ async function rebuildDB() {
 
     await dropTables();
     await createTables();
+    await createInitialUsers();
   } catch (error) {
     throw error;
   }
