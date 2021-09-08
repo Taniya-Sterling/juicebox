@@ -1,62 +1,62 @@
-const PORT = 3000;
-const express = require('express');
-const server = express();
-const apiRouter = require('./api');
-const { client } = require('./db');
-require('dotenv').config();
+// const PORT = 3000;
+// const express = require('express');
+// const server = express();
+// const apiRouter = require('./api');
+// const { client } = require('./db');
+// require('dotenv').config();
 
-client.connect();
+// client.connect();
 
-const jwt = require('jsonwebtoken');
-const { getUserById } = require('../db');
-const { JWT_SECRET } = process.env;
-
-
-apiRouter.use(async (req, res, next) => {
-  const prefix = 'Bearer ';
-  const auth = req.header('Authorization');
-
-  if (!auth) { 
-    next();
-  } else if (auth.startsWith(prefix)) {
-    const token = auth.slice(prefix.length);
-
-    try {
-      const { id } = jwt.verify(token, JWT_SECRET);
-
-      if (id) {
-        req.user = await getUserById(id);
-        next();
-      }
-    } catch ({ name, message }) {
-      next({ name, message });
-    }
-  } else {
-    next({
-      name: 'AuthorizationHeaderError',
-      message: `Authorization token must start with ${ prefix }`
-    });
-  }
-});
+// const jwt = require('jsonwebtoken');
+// const { getUserById } = require('../db');
+// const { JWT_SECRET } = process.env;
 
 
+// apiRouter.use(async (req, res, next) => {
+//   const prefix = 'Bearer ';
+//   const auth = req.header('Authorization');
 
-server.listen(PORT, () => {
-  console.log('The server is up on port', PORT)
-});
-server.use('/api', apiRouter);
+//   if (!auth) { 
+//     next();
+//   } else if (auth.startsWith(prefix)) {
+//     const token = auth.slice(prefix.length);
 
-server.use((req, res, next) => {
-  const bodyParser = require('body-parser');
-    server.use(bodyParser.json());
-    const morgan = require('morgan');
-    server.use(morgan('dev'));
-    console.log("<____Body Logger START____>");
-    console.log(req.body);
-    console.log("<_____Body Logger END_____>");
+//     try {
+//       const { id } = jwt.verify(token, JWT_SECRET);
+
+//       if (id) {
+//         req.user = await getUserById(id);
+//         next();
+//       }
+//     } catch ({ name, message }) {
+//       next({ name, message });
+//     }
+//   } else {
+//     next({
+//       name: 'AuthorizationHeaderError',
+//       message: `Authorization token must start with ${ prefix }`
+//     });
+//   }
+// });
+
+
+
+// server.listen(PORT, () => {
+//   console.log('The server is up on port', PORT)
+// });
+// server.use('/api', apiRouter);
+
+// server.use((req, res, next) => {
+//   const bodyParser = require('body-parser');
+//     server.use(bodyParser.json());
+//     const morgan = require('morgan');
+//     // server.use(morgan('dev'));
+//     // console.log("<____Body Logger START____>");
+//     // console.log(req.body);
+//     // console.log("<_____Body Logger END_____>");
   
-    next();
-  });
+//     next();
+//   });
 
 
 
