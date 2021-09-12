@@ -38,23 +38,16 @@ async function createPost({
   title,
   content
 }) {
-  try {
-    const { rows: [ posts ] }= await client.query(`
-        id SERIAL PRIMARY KEY,
-        "authorId" INTEGER REFERENCES users(id) NOT NULL,
-        title VARCHAR(255) NOT NULL,
-        content TEXT NOT NULL,
-        active BOOLEAN DEFAULT true,
-        RETURNING *;
-      `, [authorId,
-        title,
-        content]);
-     
-      return user;
-
-  } catch (error) {
-    throw error;
-  }
+    try {
+        const { rows: [post] } = await client.query(`
+            INSERT INTO posts("authorId", title, content)
+            VALUES ($1, $2, $3)
+            RETURNING *;
+        `, [authorId, title, content]);
+        return post;
+    } catch (error) {
+        throw error;
+    }
 }
   
 
@@ -72,7 +65,6 @@ async function createPost({
         ON CONFLICT (username) DO NOTHING 
         RETURNING *;
       `, [username, password, name, location]);
-     
       return user;
       
     } catch (error) {

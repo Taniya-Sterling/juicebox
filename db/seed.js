@@ -95,10 +95,12 @@ async function createTables() {
         content TEXT NOT NULL,
         active BOOLEAN DEFAULT true
       );
-      CREATE TABLE id (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) UNIQUE NOT NULL  
-      );
+
+        CREATE TABLE tags (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(255) UNIQUE NOT NULL
+        );
+
       CREATE TABLE post_tags (
        "postId" INTEGER REFERENCES posts(id) UNIQUE,
        "tagId" INTEGER REFERENCES tags(id) UNIQUE 
@@ -123,30 +125,6 @@ async function createTags(tagList) {
 `,);
 //now this is unreachable, dont forget to fix it after finding whats wrong with the tables
 return tags;
- 
-  const insertValues = tagList.map(
-    (insertValues, index) => `$${index + 1}`).join('insertValues), (index');
-
-  // need something like $1, $2, $3
-  const { rows: [ values ] }= await client.query(`
-  INSERT INTO values(name)
-  VALUES ($1), ($2), ($3)
-  ON CONFLICT (name) DO NOTHING;
-`,);
-  const selectValues = tagList.map(
-    (selectValues, index) => `$${index + 1}`).join('selectValues, index');
-
-  try {//this is unreachable, come back and fix it
-    const { rows: [ tags ] }= await client.query(`
-  INSERT INTO tags(name)
-  VALUES ($1), ($2), ($3)
-  ON CONFLICT (name) DO NOTHING;
-  SELECT * FROM tags
-`,);
-return tags
-  } catch (error) {
-    throw error;
-  }
 }
 
 async function rebuildDB() {
@@ -178,20 +156,20 @@ async function testDB() {
     });
     console.log("Result:", updateUserResult);
 
-    console.log("Calling getAllPosts");
-    const posts = await getAllPosts();
-    console.log("Result:", posts);
+    // console.log("Calling getAllPosts");
+    // const posts = await getAllPosts();
+    // console.log("Result:", posts);
 
-    console.log("Calling updatePost on posts[0]");
-    const updatePostResult = await updatePost(posts[0].id, {
-      title: "New Title",
-      content: "Updated Content"
-    });
-    console.log("Result:", updatePostResult);
+    // console.log("Calling updatePost on posts[0]");
+    // const updatePostResult = await updatePost(posts[0].id, {
+    //   title: "New Title",
+    //   content: "Updated Content"
+    // });
+    // console.log("Result:", updatePostResult);
 
-    console.log("Calling getUserById with 1");
-    const albert = await getUserById(1);
-    console.log("Result:", albert);
+    // console.log("Calling getUserById with 1");
+    // const albert = await getUserById(1);
+    // console.log("Result:", albert);
 
     console.log("Finished database tests!");
   } catch (error) {
